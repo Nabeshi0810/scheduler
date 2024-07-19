@@ -22,3 +22,9 @@ a.exe
 ・到着準
 
 ・ラウンドロビン
+
+**その他**
+
+ラウンドロビンの定時間を変更するなら → scheduler.c L3 のFIXED_TIMEに設定。
+
+プロセスを変更する → scheduler.txtを変更し プロセス数をscheduler.c L2のProcessNumberに設定。
