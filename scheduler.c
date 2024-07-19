@@ -8,7 +8,7 @@ void SortByProcessingTime (char Name[ProcessNumber], int ArrivalTime[ProcessNumb
     //ソートする(処理時間が小さい順にソート)
     for ( int i = 0; i < ProcessNumber; i++)
     {
-        for ( int j = i ; j < ProcessNumber - 1; j++)
+        for ( int j = i ; j < ProcessNumber - 1 - i; j++)
         {
             if ( ProcessTime[j] > ProcessTime[j + 1] )
             {
@@ -47,7 +47,7 @@ void ArrivalOrder (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int
     //到着順にソート
     for ( int i = 0; i < ProcessNumber; i++)
     {
-        for ( int j = i ; j < ProcessNumber - 1; j++)
+        for ( int j = i ; j < ProcessNumber - 1 - i; j++)
         {
             if ( ArrivalTime[j] > ArrivalTime[j + 1] )
             {
@@ -93,18 +93,18 @@ int finish_check ( int ProcessTime[ProcessNumber] )
 }
 
 //ラウンドロビン
-void  RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
+void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
 {
     //到着順にソート
     for ( int i = 0; i < ProcessNumber; i++)
     {
-        for ( int j = i ; j < ProcessNumber - 1; j++)
+        for ( int j = i ; j < ProcessNumber - 1 - i; j++)
         {
             if ( ArrivalTime[j] > ArrivalTime[j + 1] )
             {
                 int t;
                 t = ArrivalTime[j];
-                ArrivalTime[j] = ArrivalTime[j +1];
+                ArrivalTime[j] = ArrivalTime[j + 1];
                 ArrivalTime[j + 1] = t;
                 t = ProcessTime[j];
                 ProcessTime[j] = ProcessTime[j + 1];
@@ -116,7 +116,7 @@ void  RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int 
             }
         }
     }
-    //定時間2でラウンドロビン
+    //定時間Fixed_Timeでラウンドロビン
     int count = ArrivalTime[0];
     int sum = 0;
     int array[10000];
@@ -134,7 +134,7 @@ void  RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int 
             ProcessTime[array[array_now]] = ProcessTime[array[array_now]] - FIXED_TIME;
             k = 1;
         }
-        else if (ProcessTime[array[array_now]] > 0)
+        else if ( 0 < ProcessTime[array[array_now]]  && ProcessTime[array[array_now]] <= FIXED_TIME )
         {
             count = count + ProcessTime[array[array_now]];
             ProcessTime[array[array_now]] = 0;
@@ -142,11 +142,11 @@ void  RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int 
             k = 0;
         }
         //全てのプロセスが終了したか確認
-        if ( finish_check ( ProcessTime ) )
+        if ( finish_check ( &ProcessTime[0] ) )
         {
             break;
         }
-        //配列の後ろに置くプロセスを決める
+        //到着時刻を過ぎ、まだ処理がされていないプロセスを配列の最後に置く
         for ( int j = l; j < ProcessNumber; j++)
         {
             if (count >= ArrivalTime[j])
