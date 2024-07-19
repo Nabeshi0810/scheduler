@@ -1,6 +1,6 @@
 #include <stdio.h>
 #define ProcessNumber 4 //プロセスの数
-#define FIXED TIME 2 //定時間
+#define FIXED_TIME 2 //定時間
 
 //処理時間順(完成)
 void SortByProcessingTime (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
@@ -80,6 +80,18 @@ void ArrivalOrder (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int
     printf ("到着時間順による平均応答時間:%.2f秒\n", (double) sum / ProcessNumber );
 }
 
+int finish_check ( int ProcessTime[ProcessNumber] )
+{
+    for ( int i = 0; i < ProcessNumber; i++)
+    {
+        if ( ProcessTime[i] != 0 )
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 //ラウンドロビン
 void  RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
 {
@@ -107,12 +119,52 @@ void  RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int 
     //定時間2でラウンドロビン
     int count = ArrivalTime[0];
     int sum = 0;
-    int t;
+    int array[10000];
+    int array_now = 0;
+    int array_final = 1;
+    array[array_now] = 0;
+    int k;
+    int l = 1;
     while (1)
     {
-        
+        //プロセスの処理
+        if ( ProcessTime[array[array_now]] > FIXED_TIME )
+        {
+            count = count + FIXED_TIME;
+            ProcessTime[array[array_now]] = ProcessTime[array[array_now]] - FIXED_TIME;
+            k = 1;
+        }
+        else if (ProcessTime[array[array_now]] > 0)
+        {
+            count = count + ProcessTime[array[array_now]];
+            ProcessTime[array[array_now]] = 0;
+            sum = sum + count - ArrivalTime[array[array_now]];
+            k = 0;
+        }
+        //全てのプロセスが終了したか確認
+        if ( finish_check ( ProcessTime ) )
+        {
+            break;
+        }
+        //配列の後ろに置くプロセスを決める
+        for ( int j = l; j < ProcessNumber; j++)
+        {
+            if (count >= ArrivalTime[j])
+            {
+                l = l + 1;
+                array[array_final] = j;
+                array_final = array_final + 1;
+            }
+        }
+        //今の処理で終了してないプロセスは配列の最後に置く
+        if ( k == 1 )
+        {
+            array[array_final] = array[array_now];
+            array_final = array_final + 1;
+        }
+        array_now = array_now + 1;
     }
-    printf ("定時間2のラウンドロビン:%.2f秒\n", (double) sum / ProcessNumber);
+    printf ("定時間%d秒のラウンドロビン:%.2f秒\n" , FIXED_TIME, (double) sum / ProcessNumber);
 }
 
 int main (void)
@@ -133,10 +185,10 @@ int main (void)
         {
         fscanf ( fp, "%s %d %d", &Name[i], &ArrivalTime[i], &ProcessTime[i]);
         }
+        fclose (fp);
         SortByProcessingTime ( &Name[0], &ArrivalTime[0], &ProcessTime[0]);
         ArrivalOrder ( &Name[0], &ArrivalTime[0], &ProcessTime[0]);
         RoundRobin ( &Name[0], &ArrivalTime[0], &ProcessTime[0]);
     }
-    fclose (fp);
     return 0;
 }
