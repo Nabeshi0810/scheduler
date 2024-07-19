@@ -5,7 +5,7 @@
 //処理時間順(完成)
 void SortByProcessingTime (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
 {
-    //ソートする(処理時間が小さい順にソート)
+    //ソートする(処理時間が早い順にソート)
     for ( int i = 0; i < ProcessNumber; i++)
     {
         for ( int j = i ; j < ProcessNumber - 1 - i; j++)
@@ -44,7 +44,7 @@ void SortByProcessingTime (char Name[ProcessNumber], int ArrivalTime[ProcessNumb
 //到着時間順 (完成)
 void ArrivalOrder (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
 {
-    //到着順にソート
+    //ソートする(到着時間の早い順にソート)
     for ( int i = 0; i < ProcessNumber; i++)
     {
         for ( int j = i ; j < ProcessNumber - 1 - i; j++)
@@ -95,7 +95,7 @@ int finish_check ( int ProcessTime[ProcessNumber] )
 //ラウンドロビン
 void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
 {
-    //到着順にソート
+    //ソートする(到着時間の早い順にソート)
     for ( int i = 0; i < ProcessNumber; i++)
     {
         for ( int j = i ; j < ProcessNumber - 1 - i; j++)
@@ -116,7 +116,6 @@ void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int P
             }
         }
     }
-    //定時間Fixed_Timeでラウンドロビン
     int count = ArrivalTime[0];
     int sum = 0;
     int array[10000];
@@ -125,6 +124,7 @@ void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int P
     array[array_now] = 0;
     int k;
     int l = 1;
+    //定時間FIXED_TIMEでラウンドロビン
     while (1)
     {
         //プロセスの処理
@@ -133,6 +133,7 @@ void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int P
             count = count + FIXED_TIME;
             ProcessTime[array[array_now]] = ProcessTime[array[array_now]] - FIXED_TIME;
             k = 1;
+            // printf ("%c\n",Name[array[array_now]]);
         }
         else if ( 0 < ProcessTime[array[array_now]]  && ProcessTime[array[array_now]] <= FIXED_TIME )
         {
@@ -140,6 +141,7 @@ void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int P
             ProcessTime[array[array_now]] = 0;
             sum = sum + count - ArrivalTime[array[array_now]];
             k = 0;
+            // printf ("%c is finished\n",Name[array[array_now]]);
         }
         //全てのプロセスが終了したか確認
         if ( finish_check ( &ProcessTime[0] ) )
