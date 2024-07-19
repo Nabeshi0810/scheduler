@@ -17,7 +17,7 @@ void SortByProcessingTime (char Name[ProcessNumber], int ArrivalTime[ProcessNumb
                 ProcessTime[j] = ProcessTime[j + 1];
                 ProcessTime[j + 1] = t;
                 t = ArrivalTime[j];
-                ArrivalTime[j] = ArrivalTime[j +1];
+                ArrivalTime[j] = ArrivalTime[j + 1];
                 ArrivalTime[j + 1] = t;
                 char s;
                 s = Name[j];
