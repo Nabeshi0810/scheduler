@@ -1,84 +1,7 @@
+//ラウンドロビン
 #include <stdio.h>
 #define ProcessNumber 4 //プロセスの数
 #define FIXED_TIME 2 //定時間
-
-//処理時間順(完成)
-void SortByProcessingTime (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
-{
-    //ソートする(処理時間が早い順にソート)
-    for ( int i = 0; i < ProcessNumber; i++)
-    {
-        for ( int j = i ; j < ProcessNumber - 1 - i; j++)
-        {
-            if ( ProcessTime[j] > ProcessTime[j + 1] )
-            {
-                int t;
-                t = ProcessTime[j];
-                ProcessTime[j] = ProcessTime[j + 1];
-                ProcessTime[j + 1] = t;
-                t = ArrivalTime[j];
-                ArrivalTime[j] = ArrivalTime[j + 1];
-                ArrivalTime[j + 1] = t;
-                char s;
-                s = Name[j];
-                Name[j] = Name[j + 1];
-                Name[j + 1] = s;
-            }
-        }
-    }
-    //時間順に処理
-    int count = ArrivalTime[0];
-    int sum = 0;
-    for ( int i = 0; i < ProcessNumber; i++)
-    {
-        if ( count < ArrivalTime[i])
-        {
-            count = ArrivalTime[i];
-        }
-        count = count + ProcessTime[i];
-        sum = sum + count - ArrivalTime[i];;
-    }
-    printf ("処理時間順による平均応答時間:%.2f秒\n", (double) sum / ProcessNumber);
-}
-
-//到着時間順 (完成)
-void ArrivalOrder (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
-{
-    //ソートする(到着時間の早い順にソート)
-    for ( int i = 0; i < ProcessNumber; i++)
-    {
-        for ( int j = i ; j < ProcessNumber - 1 - i; j++)
-        {
-            if ( ArrivalTime[j] > ArrivalTime[j + 1] )
-            {
-                int t;
-                t = ArrivalTime[j];
-                ArrivalTime[j] = ArrivalTime[j +1];
-                ArrivalTime[j + 1] = t;
-                t = ProcessTime[j];
-                ProcessTime[j] = ProcessTime[j + 1];
-                ProcessTime[j + 1] = t;
-                char s;
-                s = Name[j];
-                Name[j] = Name[j + 1];
-                Name[j + 1] = s;
-            }
-        }
-    }
-    //到着順に処理
-    int count = ArrivalTime[0];
-    int sum = 0;
-    for ( int  i = 0; i < ProcessNumber; i++)
-    {
-        if ( count < ArrivalTime[i] )
-        {
-            count = ArrivalTime[i];
-        }
-        count = count + ProcessTime[i];
-        sum = sum + count - ArrivalTime[i];
-    }
-    printf ("到着時間順による平均応答時間:%.2f秒\n", (double) sum / ProcessNumber );
-}
 
 int finish_check ( int ProcessTime[ProcessNumber] )
 {
@@ -92,7 +15,6 @@ int finish_check ( int ProcessTime[ProcessNumber] )
     return 1;
 }
 
-//ラウンドロビン
 void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int ProcessTime[ProcessNumber])
 {
     //ソートする(到着時間の早い順にソート)
@@ -116,14 +38,12 @@ void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int P
             }
         }
     }
+    int k , l = 1;
     int count = ArrivalTime[0];
     int sum = 0;
+    int array_now = 0, array_final = 1;
     int array[10000];
-    int array_now = 0;
-    int array_final = 1;
     array[array_now] = 0;
-    int k;
-    int l = 1;
     //定時間FIXED_TIMEでラウンドロビン
     while (1)
     {
@@ -169,6 +89,7 @@ void RoundRobin (char Name[ProcessNumber], int ArrivalTime[ProcessNumber], int P
     printf ("定時間%d秒のラウンドロビン:%.2f秒\n" , FIXED_TIME, (double) sum / ProcessNumber);
 }
 
+
 int main (void)
 {
     FILE *fp;
@@ -185,12 +106,10 @@ int main (void)
     {
         for ( int i = 0; i < ProcessNumber; i++)
         {
-        fscanf ( fp, "%s %d %d", &Name[i], &ArrivalTime[i], &ProcessTime[i]);
+            fscanf ( fp, "%s %d %d", &Name[i], &ArrivalTime[i], &ProcessTime[i]);
         }
-        fclose (fp);
-        SortByProcessingTime ( &Name[0], &ArrivalTime[0], &ProcessTime[0]);
-        ArrivalOrder ( &Name[0], &ArrivalTime[0], &ProcessTime[0]);
         RoundRobin ( &Name[0], &ArrivalTime[0], &ProcessTime[0]);
+        fclose (fp);
     }
     return 0;
 }
