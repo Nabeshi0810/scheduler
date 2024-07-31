@@ -1,6 +1,6 @@
 //処理時間順
 #include <stdio.h>
-#define ProcessNumber 4 
+#define ProcessNumber 7
 
 int next_process  (int count, int Finished_process_array[ProcessNumber], int ArrivalTime[ProcessNumber])
 {
